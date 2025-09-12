@@ -1,0 +1,522 @@
+/* Navbar Cart Styles */
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.cart-btn {
+  background: #ff6b35;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.cart-btn:hover {
+  background: #e55a2b;
+  transform: translateY(-1px);
+}
+
+/* Hide mobile brand on desktop/tablet */
+.mobile-brand {
+  display: none;
+}
+
+/* Cart Modal in Navbar */
+.cart-modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 500px;
+  height: 100vh;
+  background: white;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transform: translateX(100%);
+  animation: slideIn 0.3s ease forwards;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .mobile-brand {
+    display: none;
+  }
+
+  .item-name {
+    font-size: 16px;
+  }
+
+
+  .hamburger.active+.mobile-brand {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10001;
+  }
+
+  .navbar-actions {
+    gap: 10px;
+  }
+
+  .cart-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .cart-modal {
+    width: 100vw;
+    right: 0;
+  }
+
+  .cart-header {
+    padding: 15px;
+  }
+
+  .cart-items {
+    padding: 15px;
+  }
+
+  .cart-item {
+    gap: 8px;
+    padding: 8px 0;
+  }
+
+  .cart-item-image {
+    width: 40px;
+    height: 40px;
+  }
+
+  .cart-item-details h4 {
+    font-size: 12px;
+  }
+
+  .cart-item-details p {
+    font-size: 10px;
+  }
+
+  .quantity-controls button {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+  }
+
+  .address-input {
+    font-size: 10px;
+    padding: 6px;
+  }
+
+  .add-address-btn {
+    font-size: 10px;
+    padding: 6px 8px;
+  }
+
+  .summary-row {
+    font-size: 12px;
+  }
+
+  .place-order-btn {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cart-header {
+    padding: 10px;
+  }
+
+  .cart-items {
+    padding: 10px;
+  }
+
+  .cart-item-image {
+    width: 35px;
+    height: 35px;
+  }
+
+  .quantity-controls {
+    gap: 5px;
+  }
+
+  .quantity-controls button {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+  }
+}
+
+@keyframes slideIn {
+  to {
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 1200px) {
+  .cart-modal {
+    width: 350px;
+  }
+}
+
+@media (max-width: 992px) {
+  .cart-modal {
+    width: 320px;
+  }
+}
+
+.cart-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+  background: #f8f9fa;
+}
+
+.cart-header h3 {
+  margin: 0;
+  color: #333;
+}
+
+.close-cart {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+}
+
+.empty-cart {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.cart-items {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  max-height: 400px;
+  border: 2px solid #eee;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.cart-item-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.cart-item-details h4 {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.cart-item-details p {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+}
+
+.cart-footer {
+  padding: 20px 0;
+  text-align: center;
+  border-top: 1px solid #eee;
+}
+
+.continue-shopping {
+  background: #ff6b35;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.continue-shopping:hover {
+  background: #e55a2b;
+}
+
+/* Quantity Controls */
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quantity-controls button {
+  background: #ff6b35;
+  color: white;
+  border: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantity-controls span {
+  min-width: 20px;
+  text-align: center;
+  font-weight: bold;
+  color: #333;
+}
+
+.cart-item-total {
+  font-weight: bold;
+  color: #ff6b35;
+  margin-left: auto;
+}
+
+.remove-item {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 5px;
+}
+
+/* Address Section */
+.address-section {
+  padding: 15px 0;
+  border-top: 1px solid #eee;
+}
+
+.address-section h4 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 14px;
+}
+
+.address-list {
+  margin-bottom: 10px;
+}
+
+.address-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.address-option input[type="radio"] {
+  margin: 0;
+}
+
+.address-text {
+  font-size: 12px;
+  color: #666;
+}
+
+.new-address-input {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.address-input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.add-address-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* Cart Summary */
+.cart-summary {
+  padding: 15px 20px;
+  border-top: 2px solid #eee;
+  background: #f8f9fa;
+  margin-top: 10px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  font-size: 14px;
+}
+
+.summary-row.total {
+  font-weight: bold;
+  font-size: 16px;
+  color: #ff6b35;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+  margin-top: 5px;
+}
+
+.place-order-btn {
+  width: 100%;
+  background: #ff6b35;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 15px;
+  transition: background 0.3s ease;
+}
+
+.place-order-btn:hover {
+  background: #e55a2b;
+}
+
+.no-addresses {
+  font-size: 12px;
+  color: #999;
+  margin: 5px 0;
+}
+
+/* Add Address Form */
+.add-address-form {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #f9f9f9;
+}
+
+.location-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 8px 0;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.coordinates {
+  color: #888;
+  font-size: 10px;
+}
+
+.address-form-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.save-address-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.save-address-btn:hover {
+  background: #218838;
+}
+
+/* Payment Section */
+.payment-section {
+  padding: 15px 0;
+  border-top: 1px solid #eee;
+}
+
+.payment-section h4 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 14px;
+}
+
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.payment-option input[type="radio"] {
+  margin: 0;
+}
+
+.payment-option label {
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* Tip Section */
+.tip-section {
+  padding: 15px 0;
+  border-top: 1px solid #eee;
+}
+
+.tip-section h4 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 14px;
+}
+
+.tip-options {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tip-btn {
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+
+.tip-btn:hover {
+  background: #e9ecef;
+}
+
+.tip-btn.active {
+  background: #ff6b35;
+  color: white;
+  border-color: #ff6b35;
+}

@@ -1,0 +1,18 @@
+.aboutContainer {
+    margin-top: -75px !important;
+}
+
+.menuContainer,
+.priceContainer,
+.contactContainer {
+    margin-top: 105px;
+
+}
+
+@media (max-width: 1000px) {
+    .menuContainer,
+    .priceContainer,
+    .contactContainer {
+        margin-top: 62px !important;
+    }
+}
