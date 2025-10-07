@@ -88,7 +88,7 @@ export default function DetailedMenu() {
         });
 
         if (!orderResponse.ok) throw new Error('Failed to create payment order');
-        
+
         const razorpayOrder = await orderResponse.json();
         const options = {
           key: 'rzp_test_JZhnqNEMQas344',
@@ -199,10 +199,10 @@ export default function DetailedMenu() {
       //   description: "Crispy fried chicken with special spices",
       //   special: true
       // },
-      
+
     ],
     large: [
-       {
+      {
         id: 1,
         name: "Large Chicken Biryani",
         price: 185,
@@ -231,11 +231,11 @@ export default function DetailedMenu() {
       <div className="menu-header">
         <h1 className="menu-title">Our Biryani Menu</h1>
         <p className="menu-subtitle">Authentic flavors, perfect portions</p>
-        
+
         {/* Cart Button */}
         <div className="cart-section">
-          <button 
-            className="cart-btn cartbutton" 
+          <button
+            className="cart-btn cartbutton"
             onClick={() => setShowCart(!showCart)}
           >
             🛒 Cart ({getTotalQuantity()})
@@ -243,7 +243,7 @@ export default function DetailedMenu() {
         </div>
       </div>
 
-      <CartModal 
+      <CartModal
         showCart={showCart}
         setShowCart={setShowCart}
         cart={cart}
@@ -268,7 +268,7 @@ export default function DetailedMenu() {
               <h3>Select Delivery Address</h3>
               <button className="close-modal" onClick={() => setShowAddressModal(false)}>×</button>
             </div>
-            
+
             <div className="address-options">
               <h4>Saved Addresses:</h4>
               {userAddresses.length > 0 ? (
@@ -288,7 +288,7 @@ export default function DetailedMenu() {
               ) : (
                 <p className="no-addresses">No saved addresses found</p>
               )}
-              
+
               <div className="new-address-section">
                 <h4>Add New Address:</h4>
                 <div className="new-address-input">
@@ -305,7 +305,7 @@ export default function DetailedMenu() {
                 </div>
               </div>
             </div>
-            
+
             <div className="address-modal-footer">
               <div className="selected-address">
                 <strong>Delivering to:</strong>
@@ -326,7 +326,7 @@ export default function DetailedMenu() {
 
       {/* Sunday Special Section */}
       <div className="sunday-special-section">
-        <h2 className="section-title">🌟 Sunday Special</h2>
+        <h2 className="section-title" ><img src="/assets/sunday_special.png" alt="Sunday Special" /></h2>
         <div className="menu-grid">
           <div className="menu-item-card special-item ">
             <div className="special-badge">Sunday Only</div>
@@ -338,7 +338,7 @@ export default function DetailedMenu() {
               {showDescription['sunday-chicken-65'] && (
                 <p className="item-description">Boneless tender chickene, deep fried and served hot.</p>
               )}
-              <button 
+              <button
                 className="description-toggle-btn"
                 onClick={() => toggleDescription('sunday-chicken-65')}
               >
@@ -355,7 +355,7 @@ export default function DetailedMenu() {
                       <button onClick={() => updateQuantity(cartItem.id, cartItem.quantity + 1)}>+</button>
                     </div>
                   ) : (
-                    <button 
+                    <button
                       className="add-to-cart-btn"
                       onClick={() => addToCart({
                         name: 'Sunday Special Chicken 65',
@@ -381,7 +381,7 @@ export default function DetailedMenu() {
               {showDescription['sunday-chicken-65-biryani'] && (
                 <p className="item-description">Spicy, 65 fried chicken and Biryani Rice with ground spices.</p>
               )}
-              <button 
+              <button
                 className="description-toggle-btn"
                 onClick={() => toggleDescription('sunday-chicken-65-biryani')}
               >
@@ -398,7 +398,7 @@ export default function DetailedMenu() {
                       <button onClick={() => updateQuantity(cartItem.id, cartItem.quantity + 1)}>+</button>
                     </div>
                   ) : (
-                    <button 
+                    <button
                       className="add-to-cart-btn"
                       onClick={() => addToCart({
                         name: 'Chicken 65 Biryani Regular',
@@ -424,7 +424,7 @@ export default function DetailedMenu() {
               {showDescription['sunday-chicken-65-biryani-large'] && (
                 <p className="item-description">Spicy, 65 fried chicken and Biryani Rice with ground spices.</p>
               )}
-              <button 
+              <button
                 className="description-toggle-btn"
                 onClick={() => toggleDescription('sunday-chicken-65-biryani-large')}
               >
@@ -441,7 +441,7 @@ export default function DetailedMenu() {
                       <button onClick={() => updateQuantity(cartItem.id, cartItem.quantity + 1)}>+</button>
                     </div>
                   ) : (
-                    <button 
+                    <button
                       className="add-to-cart-btn"
                       onClick={() => addToCart({
                         name: 'Large Chicken 65 Biryani',
@@ -457,7 +457,7 @@ export default function DetailedMenu() {
               </div>
             </div>
           </div>
-          
+
         </div>
       </div>
 
@@ -488,7 +488,7 @@ export default function DetailedMenu() {
               {showDescription[item.id] && (
                 <p className="item-description">{item.description}</p>
               )}
-              <button 
+              <button
                 className="description-toggle-btn"
                 onClick={() => toggleDescription(item.id)}
               >
@@ -505,7 +505,7 @@ export default function DetailedMenu() {
                       <button onClick={() => updateQuantity(cartItem.id, cartItem.quantity + 1)}>+</button>
                     </div>
                   ) : (
-                    <button 
+                    <button
                       className="add-to-cart-btn"
                       onClick={() => addToCart(item, selectedSize)}
                       disabled={isOutOfStock(item.name)}
@@ -521,7 +521,7 @@ export default function DetailedMenu() {
       </div>
       {/* Friday Special Section */}
       <div className="friday-special-section">
-        <h2 className="section-title">🎉 Friday Special Offer</h2>
+        <h2 className="section-title"><img src="/assets/ONLY.png" alt="Friday Special Offer" /></h2>
         <div className="menu-grid">
           <div className="menu-item-card special-item friday-item">
             <div className="special-badge friday-badge">Friday Only</div>
@@ -533,7 +533,7 @@ export default function DetailedMenu() {
               {showDescription['friday-special-1'] && (
                 <p className="item-description">Friday special chicken biryani for just ₹100 only!</p>
               )}
-              <button 
+              <button
                 className="description-toggle-btn"
                 onClick={() => toggleDescription('friday-special-1')}
               >
@@ -550,7 +550,7 @@ export default function DetailedMenu() {
                       <button onClick={() => updateQuantity(cartItem.id, cartItem.quantity + 1)}>+</button>
                     </div>
                   ) : (
-                    <button 
+                    <button
                       className="add-to-cart-btn"
                       onClick={() => addToCart({
                         name: 'Friday Special Chicken Biryani',
@@ -566,7 +566,7 @@ export default function DetailedMenu() {
               </div>
             </div>
           </div>
-           <div className="menu-item-card special-item friday-item">
+          <div className="menu-item-card special-item friday-item">
             <div className="special-badge friday-badge">Friday Only</div>
             <div className="item-image">
               <img src="/assets/egg.avif" alt="Friday Special Offer" />
@@ -576,7 +576,7 @@ export default function DetailedMenu() {
               {showDescription['friday-special-2'] && (
                 <p className="item-description">Friday special egg biryani for just ₹100 only!</p>
               )}
-              <button 
+              <button
                 className="description-toggle-btn"
                 onClick={() => toggleDescription('friday-special-2')}
               >
@@ -593,7 +593,7 @@ export default function DetailedMenu() {
                       <button onClick={() => updateQuantity(cartItem.id, cartItem.quantity + 1)}>+</button>
                     </div>
                   ) : (
-                    <button 
+                    <button
                       className="add-to-cart-btn"
                       onClick={() => addToCart({
                         name: 'Friday Special Egg Biryani',
@@ -609,7 +609,7 @@ export default function DetailedMenu() {
               </div>
             </div>
           </div>
-           <div className="menu-item-card special-item friday-item">
+          <div className="menu-item-card special-item friday-item">
             <div className="special-badge friday-badge">Friday Only</div>
             <div className="item-image">
               <img src="/assets/plain.avif" alt="Friday Special Offer" />
@@ -619,7 +619,7 @@ export default function DetailedMenu() {
               {showDescription['friday-special-3'] && (
                 <p className="item-description">Friday special plain biryani for just ₹100 only!</p>
               )}
-              <button 
+              <button
                 className="description-toggle-btn"
                 onClick={() => toggleDescription('friday-special-3')}
               >
@@ -636,7 +636,7 @@ export default function DetailedMenu() {
                       <button onClick={() => updateQuantity(cartItem.id, cartItem.quantity + 1)}>+</button>
                     </div>
                   ) : (
-                    <button 
+                    <button
                       className="add-to-cart-btn"
                       onClick={() => addToCart({
                         name: 'Friday Special Plain Biryani',

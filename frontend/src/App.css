@@ -2760,7 +2760,7 @@ footer {
 
 /* Detailed Menu Styles */
 .detailed-menu {
-  padding: 12px 80px 60px;
+  padding: 12px 180px 60px;
   background: #fff;
   margin: 0 auto;
   font-family: "Poppins", sans-serif;
@@ -2768,19 +2768,17 @@ footer {
 
 .menu-header {
   text-align: center;
-  margin-bottom: 40px;
 }
 
 .menu-title {
   font-size: 42px;
   font-weight: 700;
   color: #e75b1e;
-  margin-bottom: 10px;
   font-family: "Lobster", sans-serif;
 }
 
 .menu-subtitle {
-  font-size: 18px;
+  font-size: 12px;
   color: #666;
   margin: 0;
 }
@@ -2819,7 +2817,7 @@ footer {
 .menu-item-card {
   background: white;
   border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   transition: transform 0.3s ease;
   position: relative;
@@ -2921,19 +2919,13 @@ footer {
   justify-items: center;
 }
 
-.section-title {
-  font-size: 28px;
-  font-weight: 700;
-  color: #e75b1e;
-  margin-bottom: 40px;
-  font-family: "Lobster", sans-serif;
-  background: linear-gradient(135deg, #ff6b35, #f7931e);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  animation: glow 2s ease-in-out infinite alternate;
+.section-title img {
+  width: 32%;
+  display: flex;
+  margin: 0 auto 10px;
+  border-radius: 12px;
 }
+
 
 @keyframes glow {
   from {
@@ -2949,7 +2941,7 @@ footer {
 
 /* Sunday Special Section */
 .sunday-special-section {
-  margin: 24px 0;
+  margin: 0px 0px 20px 0px;
 }
 
 .sunday-grid {
@@ -3503,11 +3495,6 @@ footer {
   margin-top: 15px;
 }
 
-@media (min-width: 480px) {
-  .tip-options {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
 
 .tip-btn {
   padding: 8px 0;
@@ -4236,7 +4223,7 @@ footer {
   }
 
   .detailed-menu {
-    padding: 12px 40px 60px !important;
+    padding: 12px 60px 5px !important;
   }
 }
 
@@ -4376,14 +4363,11 @@ footer {
     letter-spacing: 1px;
   }
 
-  .detailed-menu {
-    padding: 12px 20px 60px !important;
-  }
-
   .profile-nav {
     display: math;
     margin: auto;
   }
+
   .profile-wrapper {
     display: math;
   }
@@ -4726,7 +4710,7 @@ footer {
 
   .add-to-cart-btn:disabled {
     position: absolute;
-    right: 70px !important;
+    right: 52px !important;
   }
 
   /* Special Menu */
@@ -4939,10 +4923,6 @@ footer {
     padding: 20px;
   }
 
-  .sunday-special-section {
-    margin: 30px 0;
-  }
-
   .sunday-grid {
     display: flex;
     flex-direction: column;
@@ -5000,8 +4980,9 @@ footer {
 
   .add-to-cart-btn {
     position: absolute;
-    right: 87px;
+    right: 75px;
     bottom: 10px;
+    padding: 8px 30px !important;
   }
 
   .description-toggle-btn {
@@ -5021,6 +5002,12 @@ footer {
 
   .item-details.show {
     display: block;
+  }
+
+  .section-title img {
+    width: 52%;
+    display: flex;
+    margin: 0 auto 10px;
   }
 }
 
@@ -5218,7 +5205,7 @@ nav ul li a:hover {
 
   .add-to-cart-btn {
     position: absolute;
-    right: 35px;
+    right: 24px;
     font-size: 9px !important;
   }
 
@@ -5232,7 +5219,8 @@ nav ul li a:hover {
 
   .add-to-cart-btn:disabled {
     position: absolute;
-    right: 22px !important;
+    right: 15px !important;
+    font-size: 7px !important;
   }
 
   .quantity-controls-btn {
@@ -5265,6 +5253,9 @@ nav ul li a:hover {
 
   .item-description {
     font-size: 10px !important;
+  }
+    .detailed-menu {
+    padding: 12px 30px 5px !important;
   }
 }
 
@@ -5495,25 +5486,26 @@ nav ul li a:hover {
 
   .item-image {
     position: absolute;
-    width: 90px !important;
-    height: 100px !important;
+    width: 120px !important;
+    height: 90px !important;
     right: 12px;
     top: 10px;
   }
 
   .item-description {
     padding-right: 85px !important;
+    max-width: 185px;
   }
 
   .add-to-cart-btn {
     position: absolute;
-    right: 20px;
+    right: 18px;
     bottom: 5px;
     font-size: 8px !important;
   }
 
   .menu-item-card {
-    min-height: 120px;
+    min-height: 127px;
   }
 
   .item-content {
@@ -5521,8 +5513,15 @@ nav ul li a:hover {
   }
 
   .item-name {
-    font-size: 13px !important;
+    font-size: 10px !important;
     font-weight: bold;
+  }
+
+  .special-badge {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    font-size: 5px !important;
   }
 
   .description-toggle-btn {
@@ -5537,7 +5536,32 @@ nav ul li a:hover {
     opacity: 0.7;
     font-size: 6px !important;
     position: absolute;
-    right: 15px !important;
+    right: 12px !important;
+  }
+
+  .section-title img {
+    width: 100%;
+    display: flex;
+    /* margin: 0 auto 10px; */
+  }
+
+  .tip-options {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .quantity-controls-btn {
+    top: 88px;
+    gap: 3px !important;
+    min-width: 112px !important;
+  }
+
+  .quantity-controls-btn button {
+    width: 20px !important;
+    height: 22px !important;
+  }
+
+  .quantity-controls-btn span {
+    font-size: 12px !important;
   }
 
 }
@@ -5584,17 +5608,10 @@ nav ul li a:hover {
   .item-image {
     position: absolute;
     width: 90px !important;
-    height: 90px !important;
+    height: 70px !important;
     right: 12px;
     top: 10px;
   }
-
-  .section-title {
-    font-size: 21px;
-    margin-bottom: 21px;
-
-  }
-
 }
 
 /* Landscape orientation */
