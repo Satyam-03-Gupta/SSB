@@ -5254,7 +5254,8 @@ nav ul li a:hover {
   .item-description {
     font-size: 10px !important;
   }
-    .detailed-menu {
+
+  .detailed-menu {
     padding: 12px 30px 5px !important;
   }
 }
@@ -5493,7 +5494,7 @@ nav ul li a:hover {
   }
 
   .item-description {
-    padding-right: 85px !important;
+    padding-right: 130px !important;
     max-width: 185px;
   }
 
@@ -5510,6 +5511,8 @@ nav ul li a:hover {
 
   .item-content {
     font-size: 16px !important;
+
+    padding: 17px 0 0 20px !important;
   }
 
   .item-name {
@@ -5564,7 +5567,82 @@ nav ul li a:hover {
     font-size: 12px !important;
   }
 
+  .item-description {
+    margin-bottom: 2px !important;
+  }
+
 }
+
+@media (max-width: 375px) and (min-width: 325px) {
+  .add-to-cart-btn {
+    right: 28px !important;
+    bottom: 20px !important;
+  }
+
+  .quantity-controls-btn {
+    right: 20px !important;
+    top: 85px !important;
+  }
+}
+
+/* Small Mobile Devices (375px) */
+@media (max-width: 375px) {
+  .item-image {
+    position: absolute;
+    width: 100px !important;
+    height: 85px !important;
+    right: 16px;
+    top: 13px;
+  }
+
+  .item-name {
+    font-size: 9px !important;
+  }
+
+  .item-description {
+    font-size: 8px !important;
+  }
+
+  .item-price {
+    font-size: 12px !important;
+  }
+
+  .add-to-cart-btn {
+    bottom: 16px;
+    padding: 6px 14px !important;
+  }
+
+  .special-badge {
+    padding: 3px 8px !important;
+
+  }
+
+  .quantity-controls-btn {
+    top: 80px;
+    min-width: 80px !important;
+    right: 13px;
+  }
+
+  .quantity-controls-btn button {
+    width: 14px !important;
+    height: 16px !important;
+  }
+
+  .quantity-controls-btn>button {
+    padding: 2px 10px;
+    margin-inline: 1px;
+  }
+
+  .menu-item-card {
+    min-height: 114px;
+  }
+
+  .description-toggle-btn {
+    padding: 0 !important;
+  }
+
+}
+
 
 /* Extra Small Devices (320px) */
 @media (max-width: 320px) {

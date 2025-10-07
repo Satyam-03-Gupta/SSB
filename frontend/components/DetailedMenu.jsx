@@ -377,7 +377,7 @@ export default function DetailedMenu() {
               <img src="/assets/65biryani.avif" alt="Sunday Special Mutton Biryani" />
             </div>
             <div className="item-content">
-              <h3 className="item-name">Chicken 65 Biryani Regular</h3>
+              <h3 className="item-name">Chicken 65 Biryani</h3>
               {showDescription['sunday-chicken-65-biryani'] && (
                 <p className="item-description">Spicy, 65 fried chicken and Biryani Rice with ground spices.</p>
               )}
@@ -420,7 +420,7 @@ export default function DetailedMenu() {
               <img src="/assets/largebiryani.avif" alt="Sunday Special Mutton Biryani" />
             </div>
             <div className="item-content">
-              <h3 className="item-name">Large Chicken 65 Biryani Regular</h3>
+              <h3 className="item-name">Large Chicken 65 Biryani</h3>
               {showDescription['sunday-chicken-65-biryani-large'] && (
                 <p className="item-description">Spicy, 65 fried chicken and Biryani Rice with ground spices.</p>
               )}
