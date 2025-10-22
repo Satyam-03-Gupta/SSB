@@ -198,12 +198,6 @@
   box-shadow: 0 3px 8px rgba(40, 167, 69, 0.3);
 }
 
-.rider-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
 
 .refresh-btn {
   background: linear-gradient(135deg, #007bff, #0056b3);
@@ -223,4 +217,164 @@
   background: linear-gradient(135deg, #0056b3, #004085);
   transform: translateY(-1px);
   box-shadow: 0 3px 8px rgba(0, 123, 255, 0.3);
+}
+
+.feedback-btn {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.feedback-btn:hover {
+  background: linear-gradient(135deg, #20c997, #17a2b8);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(40, 167, 69, 0.3);
+}
+
+.feedback-submitted {
+  color: #28a745;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.completed-status {
+  color: #28a745;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.cancelled-status {
+  color: #dc3545;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.unknown-status {
+  color: #6c757d;
+  font-weight: 500;
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* Store Management Styles */
+.store-management {
+  padding: 20px;
+}
+
+.store-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.store-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.store-status-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.store-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.store-form label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+
+.store-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  height: 80px;
+}
+
+.update-store-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.update-store-btn:hover {
+  background: #218838;
+}
+
+.prebookings-section {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.prebookings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.prebooking-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 15px;
+}
+
+.prebooking-card h4 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.prebooking-card p {
+  margin: 5px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.convert-order-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 10px;
+  transition: background 0.3s ease;
+}
+
+.convert-order-btn:hover {
+  background: #218838;
 }

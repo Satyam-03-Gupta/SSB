@@ -8,6 +8,11 @@ const RiderDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [showQR, setShowQR] = useState(null);
   const [qrCode, setQrCode] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
 
   useEffect(() => {
     const riderData = localStorage.getItem('rider');
@@ -59,6 +64,7 @@ const RiderDashboard = () => {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
+      console.log('Rider orders:', data.map(o => ({ id: o.orderId, status: o.status })));
       setOrders(data);
     } catch (error) {
       console.error('Error fetching orders:', error);
@@ -89,17 +95,18 @@ const RiderDashboard = () => {
   };
 
   const openGoogleMaps = (address) => {
-    // Check if address contains coordinates (Location: lat, lng format)
-    const coordMatch = address.match(/Location:\s*([\d.-]+),\s*([\d.-]+)/);
+    // Check if address contains coordinates (Location: lat, lng format or direct coordinates)
+    const coordMatch = address.match(/Location:\s*([\d.-]+),\s*([\d.-]+)/) || 
+                      address.match(/([\d.-]+),\s*([\d.-]+)/);
     
     let googleMapsUrl;
     if (coordMatch) {
       const lat = coordMatch[1];
       const lng = coordMatch[2];
-      googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+      googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
     } else {
       const encodedAddress = encodeURIComponent(address);
-      googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+      googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
     }
     
     window.open(googleMapsUrl, '_blank');
@@ -141,10 +148,33 @@ const RiderDashboard = () => {
 
   return (
     <div className="admin-container">
-      <div className="rider-sidebar">
+      <div className={`rider-sidebar ${isOpen ? 'active' : ''}`}>
         <div className="admin-header">
           <h2>🚴♂️ Rider Panel</h2>
         </div>
+         <div className="stats-grid-2">
+            <div className="stat-card">
+              <div className="stat-icon">📦</div>
+              <div className="stat-info">
+                <h3>{orders.filter(o => o.status === 'Pending').length}</h3>
+                <p>Pending Orders</p>
+              </div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon">🚚</div>
+              <div className="stat-info">
+                <h3>{orders.filter(o => o.status === 'Out for Delivery').length}</h3>
+                <p>Out for Delivery</p>
+              </div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon">✅</div>
+              <div className="stat-info">
+                <h3>{orders.filter(o => o.status === 'Delivered').length}</h3>
+                <p>Delivered Today</p>
+              </div>
+            </div>
+          </div>
         <div className="admin-nav">
           <button className="admin-nav-item active">📦 Orders</button>
         </div>
@@ -154,10 +184,13 @@ const RiderDashboard = () => {
       <div className="admin-content">
         <div className="dashboard-section">
           <div className="rider-header">
+            <div className={`admin-hamburger ${isOpen ? 'active' : ''}`} onClick={toggleSidebar}>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
             <h1>Welcome, {rider?.name}</h1>
-            <button onClick={() => notificationService.playSound()} className="test-sound-btn">
-              🔊 Test Sound
-            </button>
+
           </div>
           
           <div className="stats-grid">
@@ -188,22 +221,31 @@ const RiderDashboard = () => {
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th>Order ID</th>
+                  {/* <th>Order ID</th> */}
                   <th>Username</th>
-                  <th>Phone</th>
-                  <th>Address</th>
+                  {/* <th>Phone</th> */}
+                  {/* <th>Address</th> */}
                   <th>Items</th>
-                  <th>Total</th>
-                  <th>Status</th>
+                  {/* <th>Total</th>
+                  <th>Status</th> */}
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {orders.map((order) => (
-                  <tr key={order._id}>
-                    <td>#{order.orderId}</td>
+                {orders.length === 0 ? (
+                  <tr>
+                    <td colSpan="3" style={{textAlign: 'center', padding: '40px', color: '#666'}}>
+                      No orders available
+                    </td>
+                  </tr>
+                ) : (
+                  orders.map((order) => {
+                    const isNewOrder = !['Delivered', 'Cancelled'].includes(order.status);
+                    return (
+                    <tr key={order._id} className={isNewOrder ? 'new-order' : ''}>
+                    {/* <td>#{order.orderId}</td> */}
                     <td>{getUsernameFromEmail(order.userEmail)}</td>
-                    <td>
+                    {/* <td>
                       {order.phoneNumber && order.paymentMethod === 'cod' ? (
                         <a href={`tel:${order.phoneNumber}`} className="phone-call-btn">
                           📞 {order.phoneNumber}
@@ -211,18 +253,18 @@ const RiderDashboard = () => {
                       ) : (
                         order.phoneNumber || 'N/A'
                       )}
-                    </td>
-                    <td>{order.deliveryAddress}</td>
+                    </td> */}
+                    {/* <td>{order.deliveryAddress}</td> */}
                     <td>{order.items?.reduce((total, item) => total + item.quantity, 0)} items</td>
-                    <td>₹{order.totalAmount}</td>
-                    <td>
+                    {/* <td>₹{order.totalAmount}</td> */}
+                    {/* <td>
                       <span className={`order-status ${order.status}`}>
                         {order.status?.replace('_', ' ')}
                       </span>
-                    </td>
+                    </td> */}
                     <td>
                       <div className="action-buttons">
-                        {order.status === 'Pending' && (
+                        {(order.status === 'Pending' || order.status === 'Confirmed' || order.status === 'Preparing') && (
                           <button 
                             className="btn-edit"
                             onClick={() => updateOrderStatus(order._id, 'Out for Delivery')}
@@ -235,16 +277,24 @@ const RiderDashboard = () => {
                             className="btn-edit"
                             onClick={() => window.location.href = `/rider/delivery/${order._id}`}
                           >
-                            Start
+                            Start Delivery
                           </button>
                         )}
                         {order.status === 'Delivered' && (
-                          <span className="completed-status">Completed</span>
+                          <span className="completed-status">✅ Completed</span>
+                        )}
+                        {order.status === 'Cancelled' && (
+                          <span className="cancelled-status">❌ Cancelled</span>
+                        )}
+                        {!['Pending', 'Confirmed', 'Preparing', 'Out for Delivery', 'Delivered', 'Cancelled'].includes(order.status) && (
+                          <span className="unknown-status">Status: {order.status}</span>
                         )}
                       </div>
                     </td>
-                  </tr>
-                ))}
+                    </tr>
+                    );
+                  })
+                )}
               </tbody>
             </table>
           </div>

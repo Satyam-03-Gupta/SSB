@@ -1,0 +1,106 @@
+.store-closure-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.store-closure-modal {
+  background: white;
+  border-radius: 15px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.store-closure-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.store-closure-header h2 {
+  margin: 0;
+  color: #e74c3c;
+  font-size: 1.3em;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #999;
+}
+
+.store-closure-content {
+  padding: 30px 20px;
+  text-align: center;
+}
+
+.closure-icon span {
+  font-size: 60px;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.closure-message {
+  font-size: 1.1em;
+  color: #333;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+.reopen-time {
+  color: #666;
+  font-size: 0.9em;
+  margin-bottom: 25px;
+}
+
+.closure-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.comeback-btn, .prebook-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.comeback-btn {
+  background: #95a5a6;
+  color: white;
+}
+
+.comeback-btn:hover {
+  background: #7f8c8d;
+}
+
+.prebook-btn {
+  background: #3498db;
+  color: white;
+}
+
+.prebook-btn:hover {
+  background: #2980b9;
+}

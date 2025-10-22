@@ -23,16 +23,43 @@ const getAddressFromCoords = async (lat, lng) => {
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ name: "", email: "", password: "", phone: "", location: { address: "" } });
+  const [formData, setFormData] = useState({ name: "", email: "", password: "", phone: "", streetAddress: "", location: { address: "" } });
   const [useCurrentLocation, setUseCurrentLocation] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const validateSignup = () => {
+    const newErrors = {};
+    
+    if (!isLogin) {
+      if (!formData.email.endsWith('@gmail.com')) {
+        newErrors.email = 'Email must be a Gmail address (@gmail.com)';
+      }
+      
+      if (!/\d/.test(formData.password)) {
+        newErrors.password = 'Password must contain at least 1 number';
+      }
+      
+      if (!/^\d{10}$/.test(formData.phone)) {
+        newErrors.phone = 'Phone number must be exactly 10 digits';
+      }
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!validateSignup()) {
+      return;
+    }
+    
     console.log('Form data:', formData);
     console.log('Is login:', isLogin);
     
@@ -56,15 +83,8 @@ export default function Login() {
       }
       
       alert(isLogin ? 'Login successful!' : 'Signup successful!');
-      // Redirect based on action
-      if (isLogin) {
-        window.location.href = '/';
-      } else {
-        // For signup, redirect to profile
-        setTimeout(() => {
-          window.location.href = '/profile';
-        }, 1000);
-      }
+      // Redirect to home page for both login and signup
+      window.location.href = '/';
     } catch (error) {
       console.error('Auth error:', error);
       console.error('Error response:', error.response?.data);
@@ -92,7 +112,7 @@ export default function Login() {
         )}
 
         <div className="input-group">
-          <label>Email</label>
+          <label>Email {errors.email && <span style={{color: 'red'}}>*</span>}</label>
           <input 
             type="email" 
             name="email" 
@@ -101,10 +121,11 @@ export default function Login() {
             onChange={handleChange} 
             required 
           />
+          {errors.email && <span style={{color: 'red', fontSize: '12px'}}>{errors.email}</span>}
         </div>
 
         <div className="input-group">
-          <label>Password</label>
+          <label>Password {errors.password && <span style={{color: 'red'}}>*</span>}</label>
           <input 
             type="password" 
             name="password" 
@@ -113,11 +134,12 @@ export default function Login() {
             onChange={handleChange} 
             required 
           />
+          {errors.password && <span style={{color: 'red', fontSize: '12px'}}>{errors.password}</span>}
         </div>
 
         {!isLogin && (
           <div className="input-group">
-            <label>Phone Number</label>
+            <label>Phone Number {errors.phone && <span style={{color: 'red'}}>*</span>}</label>
             <input 
               type="tel" 
               name="phone" 
@@ -126,17 +148,29 @@ export default function Login() {
               onChange={handleChange} 
               required 
             />
+            {errors.phone && <span style={{color: 'red', fontSize: '12px'}}>{errors.phone}</span>}
           </div>
         )}
 
         {!isLogin && (
           <>
             <div className="location-group">
+              <div className="input-group">
+                <label>Street Address</label>
+                <input 
+                  type="text" 
+                  name="streetAddress" 
+                  placeholder="House/Flat No, Street Name" 
+                  value={formData.streetAddress || ''} 
+                  onChange={(e) => setFormData({...formData, streetAddress: e.target.value})}
+                  required 
+                />
+              </div>
               <div className="location-input">
                 <input 
                   type="text" 
                   name="address" 
-                  placeholder="Enter your address" 
+                  placeholder="Area, Landmark, City" 
                   value={formData.location.address} 
                   onChange={(e) => setFormData({...formData, location: {...formData.location, address: e.target.value}})}
                   required 

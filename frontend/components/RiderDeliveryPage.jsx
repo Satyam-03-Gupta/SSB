@@ -103,16 +103,17 @@ const RiderDeliveryPage = () => {
 
   const openGoogleMaps = () => {
     const address = order.deliveryAddress;
-    const coordMatch = address.match(/Location:\s*([\d.-]+),\s*([\d.-]+)/);
+    const coordMatch = address.match(/Location:\s*([\d.-]+),\s*([\d.-]+)/) || 
+                      address.match(/([\d.-]+),\s*([\d.-]+)/);
     
     let googleMapsUrl;
     if (coordMatch) {
       const lat = coordMatch[1];
       const lng = coordMatch[2];
-      googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+      googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
     } else {
       const encodedAddress = encodeURIComponent(address);
-      googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+      googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
     }
     
     window.open(googleMapsUrl, '_blank');
@@ -164,7 +165,12 @@ const RiderDeliveryPage = () => {
             <h4>Items Ordered:</h4>
             {order.items.map((item, index) => (
               <div key={index} className="delivery-item">
-                <img src={item.image} alt={item.name} className="item-img" />
+                <img 
+                  src={item.image || '/assets/biryani.jpg'} 
+                  alt={item.name} 
+                  className="item-img"
+                  onError={(e) => { e.target.src = '/assets/biryani.jpg'; }}
+                />
                 <div className="item-info">
                   <h5>{item.name}</h5>
                   <p>Size: {item.size} | Qty: {item.quantity}</p>

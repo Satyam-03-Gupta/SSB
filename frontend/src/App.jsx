@@ -21,6 +21,7 @@ import RiderDashboardPage from '../Pages/RiderDashboard';
 import RiderDeliveryPage from '../components/RiderDeliveryPage';
 import AdminProtectedRoute from '../components/AdminProtectedRoute';
 import RiderProtectedRoute from '../components/RiderProtectedRoute';
+import FeedbackPageWrapper from '../Pages/FeedbackPage';
 
 const App = () => {
   return (
@@ -44,6 +45,7 @@ const App = () => {
         <Route path="/rider/login" element={<RiderProtectedRoute><RiderLoginPage /></RiderProtectedRoute>} />
         <Route path="/rider/dashboard" element={<RiderProtectedRoute><RiderDashboardPage /></RiderProtectedRoute>} />
         <Route path="/rider/delivery/:orderId" element={<RiderProtectedRoute><RiderDeliveryPage /></RiderProtectedRoute>} />
+        <Route path="/feedback" element={<><Navbar /><FeedbackPageWrapper /></>} />
       </Routes>
       <Toaster />
     </Router>

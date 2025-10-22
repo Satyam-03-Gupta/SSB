@@ -6,7 +6,7 @@ export default function Footer() {
       {/* Footer Content */}
       <div className="footer_background">
         <div className="logo-cloud">
-          <img src="/assets/ssblogo.png" alt="SSB Logo" className="footer_logo" />
+          <img src="/assets/biryaniride.png" alt="SSB Logo" className="footer_logo" />
         </div>
         <div className="footer_container">
           <div className="main_footer">
@@ -20,7 +20,7 @@ export default function Footer() {
           <div className="main_footer">
             <h2>New Menu</h2>
             <p>
-              Enjoy our tasty Chicken Rolls—juicy seasoned chicken in a soft wrap. Delicious and easy
+              Enjoy our tasty Chicken 65 Biryani—juicy seasoned chicken and fragrant rice, served with raita. Delicious and easy
               for a quick bite on the move!
             </p>
             <a href="#">Read more</a>
@@ -28,15 +28,16 @@ export default function Footer() {
 
           <div className="main_footer">
             <h2>Contact Us</h2>
-            <p>6 E Esplanade, St Albans VIC 3021, Australia</p>
-            <p>+91 80005 89080</p>
-            <a href="mailto:support@food.com">support@food.com</a>
+            <p>30, Madambakkam Main Rd, Madambakkam, Rajakilpakkam, Chennai, Tamil Nadu 600073</p>
+            <p>+91 99625 252110</p>
+            <p>Website: 9330378959</p>
+            <a href="mailto:bca.kingshuk@gmail.com">bca.kingshuk@gmail.com</a>
           </div>
 
           <div className="main_footer">
             <h2>Opening Hours</h2>
-            <p>Mon - Thu: 11:00 AM - 9:00 PM</p>
-            <p>Fri - Sat: 11:00 AM - 5:00 PM</p>
+            <p>Sun - Sat: 10:00 AM - 3:00 PM</p>
+            <p>Tue - Every AMMAVASI: Holiday</p>
           </div>
         </div>
       </div>

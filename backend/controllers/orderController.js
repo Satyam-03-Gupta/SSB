@@ -1,8 +1,21 @@
 import Order from '../models/Order.js';
+import Store from '../models/Store.js';
 
 // Create new order
 export const createOrder = async (req, res) => {
   try {
+    // Check store status (skip for prebooking conversions)
+    const { isConversion } = req.body;
+    if (!isConversion) {
+      const store = await Store.findOne();
+      if (store && !store.isOpen) {
+        return res.status(400).json({ 
+          message: 'Store is currently closed', 
+          storeData: store 
+        });
+      }
+    }
+    
     const { orderId, userEmail, phoneNumber, deliveryAddress, items, subtotal, deliveryFee, gst, totalAmount } = req.body;
     
     const order = new Order({

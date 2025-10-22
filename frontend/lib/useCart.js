@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import notificationService from './notificationService';
 
 export const useCart = () => {
   const [cart, setCart] = useState(() => {
@@ -174,10 +175,33 @@ export const useCart = () => {
       });
 
       if (response.ok) {
+        // Trigger notification for successful order placement
+        try {
+          await notificationService.showNotification(
+            'Order Placed Successfully!', 
+            `Your order #${orderData.orderId} has been placed and will be delivered soon.`
+          );
+        } catch (notifError) {
+          console.log('Notification error:', notifError);
+        }
+        
         clearCart();
-        window.location.href = '/orders';
+        
+        // Trigger custom event with order data for modal
+        window.dispatchEvent(new CustomEvent('orderPlaced', { 
+          detail: orderData 
+        }));
+        
         return true;
       } else {
+        const errorData = await response.json();
+        if (errorData.storeData) {
+          // Store is closed, trigger store closure modal
+          window.dispatchEvent(new CustomEvent('storeClosed', { 
+            detail: errorData.storeData 
+          }));
+          return false;
+        }
         alert('Failed to place order. Please try again.');
         return false;
       }

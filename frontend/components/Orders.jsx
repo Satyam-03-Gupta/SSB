@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../src/App.css';
+import FeedbackModal from './FeedbackModal';
 
 export default function Orders() {
   const [user, setUser] = useState(null);
@@ -7,6 +8,10 @@ export default function Orders() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [feedbackOrder, setFeedbackOrder] = useState(null);
+  const [deliveredOrders, setDeliveredOrders] = useState(new Set());
+  const [submittedFeedback, setSubmittedFeedback] = useState(new Set());
 
   useEffect(() => {
     // Get user data from localStorage
@@ -16,10 +21,10 @@ export default function Orders() {
       setUser(userObj);
       fetchUserOrders(userObj.email);
       
-      // Set up auto-refresh every 30 seconds
+      // Set up auto-refresh every 10 seconds for faster feedback detection
       const refreshInterval = setInterval(() => {
         fetchUserOrders(userObj.email, false);
-      }, 30000);
+      }, 10000);
       
       // Update current time every second for countdown
       const timeInterval = setInterval(() => {
@@ -38,11 +43,83 @@ export default function Orders() {
   const fetchUserOrders = async (email, showLoading = true) => {
     try {
       if (showLoading) setLoading(true);
-      const response = await fetch(`http://localhost:3001/api/orders/user/${email}`);
-      if (response.ok) {
-        const userOrders = await response.json();
-        setOrders(userOrders);
+      
+      // Fetch regular orders
+      const ordersResponse = await fetch(`http://localhost:3001/api/orders/user/${email}`);
+      let userOrders = [];
+      if (ordersResponse.ok) {
+        userOrders = await ordersResponse.json();
       }
+      
+      // Fetch all prebookings
+      try {
+        const prebookingsResponse = await fetch(`http://localhost:3001/api/prebookings/user/${email}`);
+        if (prebookingsResponse.ok) {
+          const userPrebookings = await prebookingsResponse.json();
+          const allPrebookings = userPrebookings.map(booking => ({
+            ...booking,
+            _id: booking._id,
+            orderId: booking.orderId,
+            orderDate: booking.createdAt,
+            status: booking.status === 'Converted' ? 'Confirmed' : 'Prebooking',
+            items: booking.items || [],
+            totalAmount: booking.totalAmount,
+            deliveryAddress: booking.deliveryAddress,
+            userEmail: booking.userEmail,
+            isPrebooking: true
+          }));
+          
+          // Combine orders and prebookings
+          userOrders = [...userOrders, ...allPrebookings];
+        }
+      } catch (prebookingError) {
+        console.error('Error fetching prebookings:', prebookingError);
+      }
+      
+      console.log('Fetched orders:', userOrders.map(o => ({ id: o._id, status: o.status, orderId: o.orderId })));
+        console.log('Current delivered orders set:', Array.from(deliveredOrders));
+        
+        // Initialize delivered orders set on first load
+        if (orders.length === 0) {
+          const initialDelivered = userOrders
+            .filter(order => order.status === 'Delivered')
+            .map(order => order._id);
+          console.log('Initializing delivered orders:', initialDelivered);
+          setDeliveredOrders(new Set(initialDelivered));
+          
+          // Load submitted feedback from localStorage
+          const savedFeedback = localStorage.getItem('submittedFeedback');
+          if (savedFeedback) {
+            setSubmittedFeedback(new Set(JSON.parse(savedFeedback)));
+          }
+        } else {
+          // Check for newly delivered orders that haven't had feedback submitted
+          const newlyDelivered = userOrders.filter(order => 
+            order.status === 'Delivered' && 
+            !deliveredOrders.has(order._id) && 
+            !submittedFeedback.has(order._id)
+          );
+          
+          console.log('Checking for newly delivered orders:', newlyDelivered.map(o => ({ id: o._id, orderId: o.orderId })));
+          
+          if (newlyDelivered.length > 0) {
+            // Show feedback modal for the first newly delivered order
+            const orderToRate = newlyDelivered[0];
+            console.log('🎉 Showing feedback modal for order:', orderToRate.orderId);
+            setFeedbackOrder(orderToRate);
+            setShowFeedbackModal(true);
+            
+            // Update delivered orders set
+            setDeliveredOrders(prev => {
+              const newSet = new Set(prev);
+              newlyDelivered.forEach(order => newSet.add(order._id));
+              console.log('Updated delivered orders set:', Array.from(newSet));
+              return newSet;
+            });
+          }
+        }
+        
+        setOrders(userOrders);
     } catch (error) {
       console.error('Error fetching orders:', error);
     } finally {
@@ -124,6 +201,17 @@ export default function Orders() {
     }
   };
 
+  const handleFeedbackSubmitted = (orderId) => {
+    // Add to submitted feedback set
+    setSubmittedFeedback(prev => {
+      const newSet = new Set(prev);
+      newSet.add(orderId);
+      // Save to localStorage
+      localStorage.setItem('submittedFeedback', JSON.stringify(Array.from(newSet)));
+      return newSet;
+    });
+  };
+
   if (loading) {
     return (
       <div className="orders-container">
@@ -171,8 +259,10 @@ export default function Orders() {
         </div>
       ) : (
         <div className="orders-list">
-          {orders.map((order) => (
-            <div key={order.id} className="order-card">
+          {orders.map((order) => {
+            const isNewOrder = !['Delivered', 'Cancelled'].includes(order.status);
+            return (
+            <div key={order._id} className={`order-card ${isNewOrder ? 'new-order' : ''}`}>
               <div className="order-header">
                 <div className="order-info">
                   <h3>Order #{order.orderId}</h3>
@@ -184,9 +274,14 @@ export default function Orders() {
               </div>
 
               <div className="order-items">
-                {order.items.map((item, index) => (
+                {(order.items || []).map((item, index) => (
                   <div key={index} className="order-item">
-                    <img src={item.image} alt={item.name} className="item-image" />
+                    <img 
+                      src={item.image || '/assets/biryani.jpg'} 
+                      alt={item.name} 
+                      className="item-image" 
+                      onError={(e) => { e.target.src = '/assets/biryani.jpg'; }}
+                    />
                     <div className="item-details">
                       <h4>{item.name}</h4>
                       <p>Quantity: {item.quantity}</p>
@@ -243,10 +338,41 @@ export default function Orders() {
                   )}
                 </div>
               )}
+              
+              {order.status === 'Delivered' && !submittedFeedback.has(order._id) && (
+                <div className="order-actions">
+                  <button 
+                    className="feedback-btn"
+                    onClick={() => {
+                      setFeedbackOrder(order);
+                      setShowFeedbackModal(true);
+                    }}
+                  >
+                    📝 Rate This Order
+                  </button>
+                </div>
+              )}
+              
+              {order.status === 'Delivered' && submittedFeedback.has(order._id) && (
+                <div className="order-actions">
+                  <span className="feedback-submitted">
+                    ✓ Feedback Submitted
+                  </span>
+                </div>
+              )}
             </div>
-          ))}
+          );
+          })}
         </div>
       )}
+      
+      {/* Feedback Modal */}
+      <FeedbackModal 
+        isOpen={showFeedbackModal}
+        onClose={() => setShowFeedbackModal(false)}
+        orderData={feedbackOrder}
+        onFeedbackSubmitted={handleFeedbackSubmitted}
+      />
     </div>
   );
 }

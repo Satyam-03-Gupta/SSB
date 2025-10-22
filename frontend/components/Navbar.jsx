@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
-import logo from "../assets/updatedlogo.png";
+import logo from "../assets/biryaniride.png";
+// import logo from "../assets/updatedlogo.png";
 import '../src/App.css';
 import './DetailedMenu.css'
 import './NavbarCart.css';
@@ -162,6 +163,7 @@ export default function Navbar() {
           <li><a href="/pricing" className={window.location.pathname === '/pricing' ? 'active-page' : ''} onClick={closeNav}>PRICING</a></li>
           {/* </div> */}
           <li><a href="/orders" className={window.location.pathname === '/orders' ? 'active-page' : ''} onClick={closeNav}>ORDERS</a></li>
+          <li><a href="/feedback" className={window.location.pathname === '/feedback' ? 'active-page' : ''} onClick={closeNav}>REVIEWS</a></li>
           <li><a href="/contact" className={window.location.pathname === '/contact' ? 'active-page' : ''} onClick={closeNav}>CONTACT US</a></li>
         </ul>
 

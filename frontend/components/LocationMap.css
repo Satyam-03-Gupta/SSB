@@ -1,0 +1,50 @@
+.location-map {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+}
+
+.map-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.map-header h3 {
+  margin: 0 0 5px 0;
+  color: #2c3e50;
+  font-size: 20px;
+}
+
+.map-header p {
+  margin: 0;
+  color: #666;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.map-container {
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+.map-actions {
+  text-align: center;
+}
+
+.directions-btn {
+  display: inline-block;
+  background: #4285f4;
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.directions-btn:hover {
+  background: #3367d6;
+}

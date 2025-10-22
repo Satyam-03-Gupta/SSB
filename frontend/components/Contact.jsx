@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import '../src/App.css';
 import api from '../lib/axios.js';
+import LocationMap from './LocationMap.jsx';
 
 const ContactSection = () => {
     const [formData, setFormData] = useState({
@@ -116,7 +117,7 @@ const ContactSection = () => {
                                     <div className="map-responsive">
                                         <iframe
                                             title="google-map"
-                                            src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3888.8991963132626!2d80.15752507507543!3d12.91419998739595!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTLCsDU0JzUxLjEiTiA4MMKwMDknMzYuNCJF!5e0!3m2!1sen!2sin!4v1755458994624!5m2!1sen!2sin"
+                                            src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3887.5234567890123!2d80.2324!3d13.058!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTPCsDAzJzI4LjgiTiA4MMKwMTMnNTYuNiJF!5e0!3m2!1sen!2sin!4v1755458994624!5m2!1sen!2sin"
                                             width="600"
                                             height="450"
                                             style={{ border: 0 }}
@@ -153,8 +154,9 @@ const ContactSection = () => {
 
                                         <div className="address2">
                                             <p>
-                                                <i className="fas fa-map-marker-alt">&nbsp;</i>W576+M28,Second St,Kaushik Avenue,Madambakkam,Rajakilpakkam,Tamil Nadu 600073,India
+                                                <i className="fas fa-map-marker-alt">&nbsp;</i>13°03'28.8"N 80°13'56.6"E
                                             </p>
+                                            <LocationMap />
                                         </div>
                                     </div>
                                 </div>

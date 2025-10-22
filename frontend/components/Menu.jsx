@@ -108,7 +108,7 @@ export default function OurMenu() {
               <button
                 className={`order-btn ${item.closed ? "disabled" : ""}`}
                 disabled={item.closed}
-                onClick={!item.closed ? () => navigate('/menu') : undefined}
+                onClick={!item.closed ? () => { navigate('/'); window.scrollTo(0, 0); } : undefined}
               >
                 {item.button}
               </button>

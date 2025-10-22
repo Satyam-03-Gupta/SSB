@@ -241,7 +241,7 @@ const CartModal = ({
               </div>
               <div className="summary-row">
                 <span>Delivery Fee:</span>
-                <span>₹30</span>
+                <span>₹15</span>
               </div>
               <div className="summary-row">
                 <span>GST (5%):</span>

@@ -4,6 +4,10 @@ import '../components/DetailedMenu.css';
 import '../components/NavbarCart.css';
 import { useCart } from '../lib/useCart';
 import CartModal from './CartModal';
+import OrderConfirmationModal from './OrderConfirmationModal';
+import StoreClosureModal from './StoreClosureModal';
+import PrebookingModal from './PrebookingModal';
+import api from '../lib/axios';
 
 // Load Razorpay script
 const loadRazorpay = () => {
@@ -28,6 +32,11 @@ export default function DetailedMenu() {
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const [newAddress, setNewAddress] = useState('');
   const [stockStatus, setStockStatus] = useState({});
+  const [showOrderModal, setShowOrderModal] = useState(false);
+  const [orderData, setOrderData] = useState(null);
+  const [storeStatus, setStoreStatus] = useState({ isOpen: true });
+  const [showClosureModal, setShowClosureModal] = useState(false);
+  const [showPrebookingModal, setShowPrebookingModal] = useState(false);
 
   const {
     cart,
@@ -50,6 +59,41 @@ export default function DetailedMenu() {
     if (adminStock) {
       setStockStatus(JSON.parse(adminStock));
     }
+    
+    // Check store status
+    const checkStoreStatus = async () => {
+      try {
+        const response = await api.get('/api/store/status');
+        setStoreStatus(response.data);
+        if (!response.data.isOpen) {
+          setShowClosureModal(true);
+        }
+      } catch (error) {
+        console.error('Error checking store status:', error);
+      }
+    };
+    
+    checkStoreStatus();
+    
+    // Listen for order placed event
+    const handleOrderPlaced = (event) => {
+      setOrderData(event.detail);
+      setShowOrderModal(true);
+    };
+    
+    // Listen for store closed event
+    const handleStoreClosed = (event) => {
+      setStoreStatus(event.detail);
+      setShowClosureModal(true);
+    };
+    
+    window.addEventListener('orderPlaced', handleOrderPlaced);
+    window.addEventListener('storeClosed', handleStoreClosed);
+    
+    return () => {
+      window.removeEventListener('orderPlaced', handleOrderPlaced);
+      window.removeEventListener('storeClosed', handleStoreClosed);
+    };
   }, []);
 
   const isOutOfStock = (itemName) => {
@@ -72,6 +116,12 @@ export default function DetailedMenu() {
   };
 
   const handleConfirmOrder = async () => {
+    // Check store status before confirming order
+    if (!storeStatus.isOpen) {
+      setShowClosureModal(true);
+      return;
+    }
+    
     if (paymentMethod === 'razorpay') {
       // Handle Razorpay payment
       const user = JSON.parse(localStorage.getItem('user'));
@@ -170,36 +220,7 @@ export default function DetailedMenu() {
         price: 125,
         image: "/assets/plain.avif",
         description: "Mildly flavoured aromatic rice that can be accompanied with various onion- tomato based gravies."
-      }, {
-        id: 4,
-        name: "Large Chicken Biryani",
-        price: 185,
-        image: "/assets/regular.avif",
-        description: "Delicious Ambur Biryani with tender chicken and seeraga samba rice, served with brinjal curry and raita."
-      },
-      {
-        id: 5,
-        name: "Large Egg Biryani",
-        price: 175,
-        image: "/assets/egg.avif",
-        description: "Fragrant rice cooked with spiced eggs, offering a satisfying meal."
-      },
-      {
-        id: 6,
-        name: "Large Plain Biryani",
-        price: 150,
-        image: "/assets/plain.avif",
-        description: "Mildly flavoured aromatic rice that can be accompanied with various onion- tomato based gravies."
       }
-      // {
-      //   id: 7,
-      //   name: "Sunday Special Chicken 65",
-      //   price: 125,
-      //   image: "/assets/chicken_roll.jpg",
-      //   description: "Crispy fried chicken with special spices",
-      //   special: true
-      // },
-
     ],
     large: [
       {
@@ -463,6 +484,12 @@ export default function DetailedMenu() {
 
       <div className="size-selector">
         <button
+          className={`size-btn ${selectedSize === 'all' ? 'active' : ''}`}
+          onClick={() => setSelectedSize('all')}
+        >
+          ALL
+        </button>
+        <button
           className={`size-btn ${selectedSize === 'regular' ? 'active' : ''}`}
           onClick={() => setSelectedSize('regular')}
         >
@@ -477,7 +504,7 @@ export default function DetailedMenu() {
       </div>
 
       <div className="menu-grid">
-        {menuData[selectedSize].map((item) => (
+        {(selectedSize === 'all' ? [...menuData.regular, ...menuData.large] : menuData[selectedSize]).map((item) => (
           <div key={item.id} className={`menu-item-card ${item.special ? 'special-item' : ''} ${isOutOfStock(item.name) ? 'out-of-stock' : ''}`}>
             {item.special && <div className="special-badge">Sunday Special</div>}
             <div className="item-image">
@@ -497,7 +524,8 @@ export default function DetailedMenu() {
               <div className="item-footer">
                 <span className="item-price">₹{item.price}</span>
                 {(() => {
-                  const cartItem = cart.find(cartItem => cartItem.name === item.name && cartItem.size === selectedSize);
+                  const itemSize = item.name.includes('Large') ? 'large' : 'regular';
+                  const cartItem = cart.find(cartItem => cartItem.name === item.name && cartItem.size === itemSize);
                   return cartItem ? (
                     <div className="quantity-controls-btn">
                       <button onClick={() => updateQuantity(cartItem.id, cartItem.quantity - 1)}>-</button>
@@ -507,7 +535,7 @@ export default function DetailedMenu() {
                   ) : (
                     <button
                       className="add-to-cart-btn"
-                      onClick={() => addToCart(item, selectedSize)}
+                      onClick={() => addToCart(item, itemSize)}
                       disabled={isOutOfStock(item.name)}
                     >
                       {isOutOfStock(item.name) ? 'Out of Stock' : 'Add to Cart'}
@@ -521,7 +549,8 @@ export default function DetailedMenu() {
       </div>
       {/* Friday Special Section */}
       <div className="friday-special-section">
-        <h2 className="section-title"><img src="/assets/ONLY.png" alt="Friday Special Offer" /></h2>
+        {/* <h2 className="section-title"><img src="/assets/prebook.png" alt="Friday Special Offer" /></h2> */}
+        <h2 className="section-title"><img src="/assets/friday.png" alt="Friday Special Offer" /></h2>
         <div className="menu-grid">
           <div className="menu-item-card special-item friday-item">
             <div className="special-badge friday-badge">Friday Only</div>
@@ -654,6 +683,32 @@ export default function DetailedMenu() {
           </div>
         </div>
       </div>
+      
+      {/* Store Closure Modal */}
+      <StoreClosureModal 
+        isOpen={showClosureModal}
+        onClose={() => setShowClosureModal(false)}
+        storeData={storeStatus}
+        onPrebookClick={() => {
+          setShowClosureModal(false);
+          setShowPrebookingModal(true);
+        }}
+      />
+      
+      {/* Prebooking Modal */}
+      <PrebookingModal 
+        isOpen={showPrebookingModal}
+        onClose={() => setShowPrebookingModal(false)}
+        cartItems={cart}
+        totalAmount={calculateTotal()}
+      />
+      
+      {/* Order Confirmation Modal */}
+      <OrderConfirmationModal 
+        isOpen={showOrderModal}
+        onClose={() => setShowOrderModal(false)}
+        orderData={orderData}
+      />
     </div>
   );
 }

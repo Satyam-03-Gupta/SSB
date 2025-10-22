@@ -22,6 +22,7 @@ connectDB();
 import MenuItem from "./models/MenuItems.js";
 import Rider from "./models/Rider.js";
 import Subscription from "./models/Subscription.js";
+import Store from "./models/Store.js";
 import bcrypt from "bcryptjs";
 
 const addSampleData = async () => {
@@ -49,6 +50,17 @@ const addSampleData = async () => {
         vehicleNumber: "TN01AB1234"
       });
       console.log("Default rider created - Email: rider@ssb.com, Password: rider123");
+    }
+    
+    // Initialize store status
+    const storeCount = await Store.countDocuments();
+    if (storeCount === 0) {
+      await Store.create({
+        isOpen: true,
+        allowPrebooking: true,
+        message: "Store is temporarily closed due to stock shortage. Please come back tomorrow or make a prebooking."
+      });
+      console.log("Store status initialized");
     }
     
     // Remove test orders
@@ -83,12 +95,18 @@ import contactRoutes from "./routes/contactRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import riderRoutes from "./routes/riderRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
+import feedbackRoutes from "./routes/feedbackRoutes.js";
+import storeRoutes from "./routes/storeRoutes.js";
+import prebookingRoutes from "./routes/prebookingRoutes.js";
 app.use("/api/auth", authRoutes);
 app.use("/api/menu", menuRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/rider", riderRoutes);
+app.use("/api/feedback", feedbackRoutes);
+app.use("/api/store", storeRoutes);
+app.use("/api/prebookings", prebookingRoutes);
 app.use("/api", paymentRoutes);
 
 const PORT = process.env.PORT || 3001;

@@ -13,6 +13,13 @@ export default function AdminDashboard() {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [menuItems, setMenuItems] = useState({});
+  const [isOpen, setIsOpen] = useState(false);
+  const [storeStatus, setStoreStatus] = useState({ isOpen: true, allowPrebooking: true, message: '' });
+  const [prebookings, setPrebookings] = useState([]);
+
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
 
   // Hide navbar for admin pages
   useEffect(() => {
@@ -111,29 +118,36 @@ export default function AdminDashboard() {
       fetchAllOrders();
     } else if (activeTab === 'contacts') {
       fetchContacts();
+    } else if (activeTab === 'store') {
+      fetchStoreStatus();
+      fetchPrebookings();
     }
   }, [activeTab]);
 
   useEffect(() => {
     notificationService.requestPermission();
     
-    if (orders.length === 0) return; // Don't start polling until we have initial orders
-    
-    let orderIds = new Set(orders.map(o => o._id));
+    let orderIds = new Set();
+    let isFirstLoad = true;
     
     const pollInterval = notificationService.startOrderPolling(async () => {
       try {
         const response = await fetch('http://localhost:3001/api/orders/admin/all');
         if (response.ok) {
           const newOrders = await response.json();
-          const hasNewOrder = newOrders.some(order => !orderIds.has(order._id));
+          const newOrderIds = new Set(newOrders.map(o => o._id));
           
-          if (hasNewOrder && orderIds.size > 0) {
-            console.log('🔔 New order detected in admin!');
-            notificationService.showNotification('New Order!', 'A new order has been placed');
+          if (!isFirstLoad && orderIds.size > 0) {
+            const hasNewOrder = newOrders.some(order => !orderIds.has(order._id));
+            
+            if (hasNewOrder) {
+              console.log('🔔 New order detected in admin!');
+              await notificationService.showNotification('New Order!', 'A new order has been placed');
+            }
           }
           
-          orderIds = new Set(newOrders.map(o => o._id));
+          orderIds = newOrderIds;
+          isFirstLoad = false;
           setOrders(newOrders);
         }
       } catch (error) {
@@ -142,7 +156,7 @@ export default function AdminDashboard() {
     }, 3000);
     
     return () => notificationService.stopOrderPolling(pollInterval);
-  }, [orders.length > 0]);
+  }, []);
 
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
@@ -209,24 +223,98 @@ export default function AdminDashboard() {
     alert(`${itemName} marked as ${status}`);
   };
 
+  const fetchStoreStatus = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/store/status');
+      if (response.ok) {
+        const data = await response.json();
+        setStoreStatus(data);
+      }
+    } catch (error) {
+      console.error('Error fetching store status:', error);
+    }
+  };
+
+  const updateStoreStatus = async (newStatus) => {
+    try {
+      const response = await fetch('http://localhost:3001/api/store/status', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newStatus)
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setStoreStatus(data.store);
+        alert('Store status updated successfully!');
+      }
+    } catch (error) {
+      console.error('Error updating store status:', error);
+    }
+  };
+
+  const fetchPrebookings = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/prebookings/all');
+      if (response.ok) {
+        const data = await response.json();
+        setPrebookings(data);
+      }
+    } catch (error) {
+      console.error('Error fetching prebookings:', error);
+    }
+  };
+
+  const convertToOrder = async (booking) => {
+    if (confirm(`Convert prebooking #${booking.orderId} to regular order for delivery?`)) {
+      try {
+        const orderData = {
+          orderId: booking.orderId,
+          userEmail: booking.userEmail,
+          phoneNumber: booking.phoneNumber,
+          deliveryAddress: booking.deliveryAddress,
+          items: booking.items,
+          subtotal: booking.subtotal,
+          deliveryFee: booking.deliveryFee || 50,
+          gst: booking.gst,
+          totalAmount: booking.totalAmount,
+          isConversion: true
+        };
+
+        const response = await fetch('http://localhost:3001/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderData)
+        });
+
+        if (response.ok) {
+          // Update prebooking status
+          await fetch(`http://localhost:3001/api/prebookings/${booking._id}/status`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 'Converted' })
+          });
+          
+          alert('Prebooking converted to order successfully! Order is now ready for rider.');
+          fetchPrebookings();
+          fetchAllOrders(); // Refresh orders to show in Recent Orders
+        } else {
+          alert('Failed to convert prebooking to order.');
+        }
+      } catch (error) {
+        console.error('Error converting prebooking:', error);
+        alert('Error converting prebooking to order.');
+      }
+    }
+  };
+
+
+
   return (
     <AdminProtectedRoute>
       <div className="admin-dashboard">
-        {/* Session Info */}
-        <div className="admin-session-info">
-          <div>Session: {sessionInfo.loginTime}</div>
-          <div>Expires in: {formatTime(timeLeft)}</div>
-        </div>
-
-        {/* Security Badge */}
-        <div className="security-badge">
-          <FaShieldAlt />
-          Secure Admin Session
-        </div>
-
         {/* Main Admin Content */}
         <div className="admin-container">
-          <div className="admin-sidebar">
+          <div className={`admin-sidebar ${isOpen ? 'active' : ''}`}>
             <div className="admin-header">
               <h2>🛡️ Admin Panel</h2>
             </div>
@@ -260,6 +348,12 @@ export default function AdminDashboard() {
                 🍽️ Menu
               </button>
               <button 
+                className={`admin-nav-item ${activeTab === 'store' ? 'active' : ''}`}
+                onClick={() => setActiveTab('store')}
+              >
+                🏪 Store Status
+              </button>
+              <button 
                 className={`admin-nav-item ${activeTab === 'users' ? 'active' : ''}`}
                 onClick={() => setActiveTab('users')}
               >
@@ -276,11 +370,26 @@ export default function AdminDashboard() {
           <div className="admin-content">
             {activeTab === 'dashboard' && (
               <div className="dashboard-section">
+                {/* Session Info */}
+                <div className="admin-session-info">
+                  <div>Session: {sessionInfo.loginTime}</div>
+                  <div>Expires in: {formatTime(timeLeft)}</div>
+                </div>
+
+                {/* Security Badge */}
+                <div className="security-badge">
+                  <FaShieldAlt />
+                  Secure Admin Session
+                </div>
+                
                 <div className="dashboard-header">
+                  <div className={`admin-hamburger ${isOpen ? 'active' : ''}`} onClick={toggleSidebar}>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
                   <h1>Admin Dashboard</h1>
-                  <button onClick={() => notificationService.playSound()} className="test-sound-btn">
-                    🔊 Test Sound
-                  </button>
+
                 </div>
                 
                 <div className="stats-grid">
@@ -340,11 +449,13 @@ export default function AdminDashboard() {
             {activeTab === 'orders' && (
               <div className="orders-management">
                 <div className="orders-header">
+                  <div className={`admin-hamburger ${isOpen ? 'active' : ''}`} onClick={toggleSidebar}>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
                   <h1>Order Management</h1>
                   <div className="header-buttons">
-                    <button onClick={() => notificationService.playSound()} className="test-sound-btn">
-                      🔊 Test Sound
-                    </button>
                     <button onClick={fetchAllOrders} className="refresh-btn">
                       🔄 Refresh
                     </button>
@@ -358,8 +469,10 @@ export default function AdminDashboard() {
                     {orders.length === 0 ? (
                       <p>No orders found</p>
                     ) : (
-                      orders.map((order) => (
-                        <div key={order._id} className="order-row">
+                      orders.map((order) => {
+                        const isNewOrder = !['Delivered', 'Cancelled'].includes(order.status);
+                        return (
+                        <div key={order._id} className={`order-row ${isNewOrder ? 'new-order' : ''}`}>
                           <div className="order-info">
                             <h3>Order #{order.orderId}</h3>
                             <p>Customer: {order.userEmail}</p>
@@ -398,7 +511,8 @@ export default function AdminDashboard() {
                             </button>
                           </div>
                         </div>
-                      ))
+                        );
+                      })
                     )}
                   </div>
                 )}
@@ -407,7 +521,14 @@ export default function AdminDashboard() {
 
             {activeTab === 'contacts' && (
               <div className="contacts-management">
-                <h1>Contact Management</h1>
+                <div className="contacts-header">
+                  <div className={`admin-hamburger ${isOpen ? 'active' : ''}`} onClick={toggleSidebar}>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                  <h1>Contact Management</h1>
+                </div>
                 <div className="admin-table-container">
                   <table className="admin-table">
                     <thead>
@@ -452,8 +573,15 @@ export default function AdminDashboard() {
 
             {activeTab === 'menu' && (
               <div className="menu-management">
-                <h1>Menu Management</h1>
-                <button className="btn-add-menu">+ Add New Item</button>
+                <div className="menu-header">
+                  <div className={`admin-hamburger ${isOpen ? 'active' : ''}`} onClick={toggleSidebar}>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                  <h1>Menu Management</h1>
+                  <button className="btn-add-menu">+ Add New Item</button>
+                </div>
                 <div className="menu-grid">
                   <div className="menu-admin-card">
                     <img src="/assets/regular.avif" alt="Chicken Biryani" />
@@ -612,9 +740,99 @@ export default function AdminDashboard() {
               </div>
             )}
 
+            {activeTab === 'store' && (
+              <div className="store-management">
+                <div className="store-header">
+                  <div className={`admin-hamburger ${isOpen ? 'active' : ''}`} onClick={toggleSidebar}>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                  <h1>Store Status Management</h1>
+                  <button onClick={fetchStoreStatus} className="refresh-btn">🔄 Refresh</button>
+                </div>
+                
+                <div className="store-controls">
+                  <div className="store-status-card">
+                    <h3>Current Status: {storeStatus.isOpen ? '🟢 Open' : '🔴 Closed'}</h3>
+                    
+                    <div className="store-form">
+                      <label>
+                        <input 
+                          type="checkbox" 
+                          checked={storeStatus.isOpen}
+                          onChange={(e) => setStoreStatus({...storeStatus, isOpen: e.target.checked})}
+                        />
+                        Store is Open
+                      </label>
+                      
+                      <label>
+                        <input 
+                          type="checkbox" 
+                          checked={storeStatus.allowPrebooking}
+                          onChange={(e) => setStoreStatus({...storeStatus, allowPrebooking: e.target.checked})}
+                        />
+                        Allow Prebooking
+                      </label>
+                      
+                      <label>
+                        Closure Message:
+                        <textarea 
+                          value={storeStatus.message}
+                          onChange={(e) => setStoreStatus({...storeStatus, message: e.target.value})}
+                          placeholder="Message to show when store is closed"
+                        />
+                      </label>
+                      
+                      <button 
+                        onClick={() => updateStoreStatus(storeStatus)}
+                        className="update-store-btn"
+                      >
+                        Update Store Status
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="prebookings-section">
+                    <h3>Prebookings ({prebookings.filter(booking => booking.status !== 'Converted').length})</h3>
+                    <button onClick={fetchPrebookings} className="refresh-btn">Load Prebookings</button>
+                    
+                    <div className="prebookings-list">
+                      {prebookings.filter(booking => booking.status !== 'Converted').map((booking) => (
+                        <div key={booking._id} className="prebooking-card">
+                          <h4>Order #{booking.orderId}</h4>
+                          <p>Customer: {booking.userEmail}</p>
+                          <p>Phone: {booking.phoneNumber}</p>
+                          <p>Address: {booking.deliveryAddress}</p>
+                          <p>Preferred Date: {new Date(booking.preferredDate).toLocaleDateString()}</p>
+                          <p>Total: ₹{booking.totalAmount}</p>
+                          <p>Status: {booking.status}</p>
+                          {booking.status === 'Pending' && (
+                            <button 
+                              onClick={() => convertToOrder(booking)}
+                              className="convert-order-btn"
+                            >
+                              🚀 Ready for Delivery
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {activeTab === 'users' && (
               <div className="users-management">
-                <h1>User Management</h1>
+                <div className="users-header">
+                  <div className={`admin-hamburger ${isOpen ? 'active' : ''}`} onClick={toggleSidebar}>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                  <h1>User Management</h1>
+                </div>
                 <div className="admin-table-container">
                   <table className="admin-table">
                     <thead>
