@@ -109,5 +109,5 @@ app.use("/api/store", storeRoutes);
 app.use("/api/prebookings", prebookingRoutes);
 app.use("/api", paymentRoutes);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
