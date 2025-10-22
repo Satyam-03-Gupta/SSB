@@ -7,10 +7,24 @@ dotenv.config();
 
 const router = express.Router();
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET
-});
+// Check if Razorpay keys exist
+let razorpay;
+if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+  razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET
+  });
+  console.log('Razorpay initialized successfully');
+} else {
+  console.warn('⚠️ Razorpay keys missing. Payment routes will not work until keys are set.');
+  // Mock object to prevent crashes
+  razorpay = {
+    orders: {
+      create: async (options) => ({ id: 'fake_order_id', ...options })
+    }
+  };
+}
+
 
 // Create Razorpay order
 router.post('/create-order', async (req, res) => {
