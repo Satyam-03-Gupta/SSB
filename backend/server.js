@@ -15,7 +15,16 @@ app.use(cors({
 app.use(express.json());
 
 // Connect DB
-import connectDB from "./config/db.js";
+const connectDB = async () => {
+  try {
+    const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/SSB";
+    await mongoose.connect(mongoURI);
+    console.log("✅ MongoDB Connected Successfully...");
+  } catch (error) {
+    console.error("❌ MongoDB connection error:", error.message);
+    process.exit(1);
+  }
+};
 connectDB();
 
 // Add sample data
