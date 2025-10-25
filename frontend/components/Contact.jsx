@@ -117,11 +117,11 @@ const ContactSection = () => {
                                     <div className="map-responsive">
                                         <iframe
                                             title="google-map"
-                                            src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3887.5234567890123!2d80.2324!3d13.058!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTPCsDAzJzI4LjgiTiA4MMKwMTMnNTYuNiJF!5e0!3m2!1sen!2sin!4v1755458994624!5m2!1sen!2sin"
+                                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6121.491847161978!2d80.16111179339356!3d12.913309500487433!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a525f004246e643%3A0xe2b4d7e9e5e6a31a!2sSupreme%20Star%20Briyani%20%5BETHiCs%20BROTHERS%5D!5e0!3m2!1sen!2sin!4v1761423949721!5m2!1sen!2sin"
                                             width="600"
                                             height="450"
                                             style={{ border: 0 }}
-                                            allowFullScreen
+                                            allowFullScreen=""
                                             loading="lazy"
                                             referrerPolicy="no-referrer-when-downgrade"
                                         ></iframe>

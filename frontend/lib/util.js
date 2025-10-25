@@ -27,3 +27,7 @@ export const logoutUser = () => {
   localStorage.removeItem("token");
   window.location.href = "/user/login";
 };
+
+export const setPageTitle = (title) => {
+  document.title = `${title} | BiryaniRide`;
+};

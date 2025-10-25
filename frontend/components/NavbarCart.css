@@ -164,7 +164,7 @@
 
 @media (max-width: 992px) {
   .cart-modal {
-    width: 320px;
+    width: 100%;
   }
 }
 
