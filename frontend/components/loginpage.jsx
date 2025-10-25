@@ -23,7 +23,7 @@ const getAddressFromCoords = async (lat, lng) => {
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ name: "", email: "", password: "", phone: "", streetAddress: "", location: { address: "" } });
+  const [formData, setFormData] = useState({ name: "", email: "", password: "", phone: "", location: { address: "" } });
   const [useCurrentLocation, setUseCurrentLocation] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -37,7 +37,7 @@ export default function Login() {
     
     if (!isLogin) {
       if (!formData.email.endsWith('@gmail.com')) {
-        newErrors.email = 'Email must be a Gmail address (@gmail.com)';
+        newErrors.email = 'Email must be a gmail address (@gmail.com)';
       }
       
       if (!/\d/.test(formData.password)) {
@@ -67,14 +67,24 @@ export default function Login() {
       const endpoint = isLogin ? '/api/auth/login' : '/api/auth/signup';
       console.log('Calling endpoint:', endpoint);
       
-      // Location is already handled in checkbox onChange
-      console.log('Submitting with location:', formData.location);
+      // Combine street address and area into single address field
+      const submitData = {
+        ...formData,
+        location: {
+          ...formData.location,
+          address: formData.location.streetAddress ? 
+            `${formData.location.streetAddress}, ${formData.location.address}` : 
+            formData.location.address
+        }
+      };
+      delete submitData.location.streetAddress;
+      console.log('Submitting with location:', submitData.location);
       
       // Test if auth routes work first
       const testResponse = await api.get('/api/auth/test');
       console.log('Auth test:', testResponse.data);
       
-      const response = await api.post(endpoint, formData);
+      const response = await api.post(endpoint, isLogin ? formData : submitData);
       console.log('Response:', response.data);
       
       localStorage.setItem('token', response.data.token);
@@ -82,7 +92,7 @@ export default function Login() {
         localStorage.setItem('user', JSON.stringify(response.data.user));
       }
       
-      alert(isLogin ? 'Login successful!' : 'Signup successful!');
+      alert(isLogin ? 'Login successful!' : 'Sign up successful!');
       // Redirect to home page for both login and signup
       window.location.href = '/';
     } catch (error) {
@@ -95,7 +105,7 @@ export default function Login() {
   return (
     <div className="auth-container">
       <form className="auth-form" onSubmit={handleSubmit}>
-        <h2 className="login-title">{isLogin ? 'Login' : 'Sign Up'}</h2>
+        <h2 className="login-title">{isLogin ? 'Login' : 'Sign up'}</h2>
         
         {!isLogin && (
           <div className="input-group">
@@ -139,7 +149,7 @@ export default function Login() {
 
         {!isLogin && (
           <div className="input-group">
-            <label>Phone Number {errors.phone && <span style={{color: 'red'}}>*</span>}</label>
+            <label>Phone number {errors.phone && <span style={{color: 'red'}}>*</span>}</label>
             <input 
               type="tel" 
               name="phone" 
@@ -156,13 +166,13 @@ export default function Login() {
           <>
             <div className="location-group">
               <div className="input-group">
-                <label>Street Address</label>
+                <label>Street address</label>
                 <input 
                   type="text" 
                   name="streetAddress" 
-                  placeholder="House/Flat No, Street Name" 
-                  value={formData.streetAddress || ''} 
-                  onChange={(e) => setFormData({...formData, streetAddress: e.target.value})}
+                  placeholder="House/flat no, street name" 
+                  value={formData.location.streetAddress || ''} 
+                  onChange={(e) => setFormData({...formData, location: {...formData.location, streetAddress: e.target.value}})}
                   required 
                 />
               </div>
@@ -170,7 +180,7 @@ export default function Login() {
                 <input 
                   type="text" 
                   name="address" 
-                  placeholder="Area, Landmark, City" 
+                  placeholder="Area, landmark, city" 
                   value={formData.location.address} 
                   onChange={(e) => setFormData({...formData, location: {...formData.location, address: e.target.value}})}
                   required 
@@ -227,12 +237,12 @@ export default function Login() {
           </>
         )}
 
-        <button type="submit" className="login-btn">{isLogin ? 'Login' : 'Sign Up'}</button>
+        <button type="submit" className="login-btn">{isLogin ? 'Login' : 'Sign up'}</button>
         
         <div className="auth-toggle">
           {isLogin ? "Don't have an account?" : "Already have an account? "}
           <span onClick={() => setIsLogin(!isLogin)}>
-            {isLogin ? 'Sign Up' : 'Login'}
+            {isLogin ? 'Sign up' : 'Login'}
           </span>
         </div>
       </form>
